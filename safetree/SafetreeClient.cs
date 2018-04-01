@@ -20,10 +20,9 @@ namespace safetree
 			client.CookieContainer = new System.Net.CookieContainer();
 		}
 
-		public string Login(string username,string password)
+		public string Login(string username,string password,string district)
 		{
-			//todo:增加各地的
-			var res=client.Simple(new RestRequest($"https://sichuanlogin.xueanquan.com/LoginHandler.ashx?userName={username}&password={password}&checkcode=&type=login&loginType=1", Method.GET));
+			var res=client.Simple(new RestRequest($"https://{district}.xueanquan.com/LoginHandler.ashx?userName={username}&password={password}&checkcode=&type=login&loginType=1", Method.GET));
 
 			return res.Content;
 		}
@@ -52,16 +51,50 @@ namespace safetree
 		{
 			var har = HAR.FromJSON<HARFile>();
 			var reqs = from p in har.log.entries select p.request;
-
-			var H_CheckCourse = (from p in reqs where p.method == "POST" && p.url.Contains("_method=SkillCheckName") select p).ToArray()[0];
-			var Req_CheckCourse = H_CheckCourse.ToRequest();
-
-			var H_Exercise = (from p in reqs where p.method == "POST" && p.url.Contains("_method=TemplateIn2") select p).ToArray()[0];
-			var Req_Exercise = H_Exercise.ToRequest();
-
+			
 			var t = new SafetreeTask();
-			t.ReqList.Add(Req_CheckCourse);
-			t.ReqList.Add(Req_Exercise);
+
+			try
+			{
+				var H_CheckCourse = (from p in reqs where p.method == "POST" && p.url.Contains("_method=SkillCheckName") select p).ToArray()[0];
+				var Req_CheckCourse = H_CheckCourse.ToRequest();
+				t.ReqList.Add(Req_CheckCourse);
+			}
+			catch { }
+
+			try
+			{
+				var H_Exercise = (from p in reqs where p.method == "POST" && p.url.Contains("_method=TemplateIn2") select p).ToArray()[0];
+				var Req_Exercise = H_Exercise.ToRequest();
+				t.ReqList.Add(Req_Exercise);
+			}
+			catch { }
+
+			try
+			{
+				var H_SubmitTest=(from p in reqs where p.method == "POST" && p.url.Contains("SubmitTest") select p).ToArray()[0];
+				t.ReqList.Add(H_SubmitTest.ToRequest());
+			}
+			catch { }
+
+			try
+			{
+				var H_step1 = (from p in reqs where p.method == "GET" && p.url.Contains("step=1") select p).ToArray()[0];
+				t.ReqList.Add(H_step1.ToRequest());
+
+				H_step1.url = H_step1.url.Replace("step=1", "step=2");
+				t.ReqList.Add(H_step1.ToRequest());
+			}
+			catch { }
+
+			try
+			{
+				//FinishWork
+				var H_Finish = (from p in reqs where p.method == "GET" && p.url.Contains("FinishWork") select p).ToArray()[0];
+				t.ReqList.Add(H_Finish.ToRequest());
+			}
+			catch { }
+
 
 			return t;
 		}

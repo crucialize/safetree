@@ -26,11 +26,12 @@ namespace safetree
 				taskList.Add(t);
 			}
 
-			foreach(var a in File.ReadAllLines($"{taskdir}info.txt"))
+			var infotxt = Directory.GetFiles(taskdir, "*.txt")[0];
+			foreach (var a in File.ReadAllLines(infotxt))
 			{
 				var username = a.Replace(" ", "");
 				var client = new SafetreeClient();
-				var LoginRes = client.Login(username, "123456");
+				var LoginRes = client.Login(username, "123456",new FileInfo(infotxt).Name.Replace(".txt",""));
 
 				foreach(var t in taskList)
 				{
