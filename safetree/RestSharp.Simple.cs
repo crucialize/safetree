@@ -14,12 +14,17 @@ namespace RestSharp.Simple
 
 		public static IRestResponse Simple(this IRestClient client,IRestRequest req)
 		{
+			var P_url = req.Resource;
+
 			//parse
 			var url = new Uri(req.Resource);
 			client.BaseUrl = new Uri(url.Scheme + "://" + url.Host);
 			req.Resource = url.PathAndQuery;
 
 			var res = client.Execute(req);
+
+			req.Resource = P_url;
+
 			return res;
 		}
 
@@ -53,6 +58,11 @@ namespace RestSharp.Simple
 
 			client.ExecuteAsync<T>(req, Callback);
 			var res = client.ExecuteAsync(req, Callback);
+		}
+
+		public static void AddPlainBody(this RestRequest p,string body)
+		{
+			p.AddParameter("", body, ParameterType.RequestBody);
 		}
 
 	}
