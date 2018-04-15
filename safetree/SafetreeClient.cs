@@ -79,14 +79,14 @@ namespace safetree
 
 			try
 			{
-				var H_step1 = (from p in reqs where p.method == "GET" && p.url.Contains("step=1") select p).ToArray()[0];
+				var H_step1 = (from p in reqs where p.method == "GET" && p.url.Contains("Step=1") select p).ToArray()[0];
 				t.ReqList.Add(H_step1.ToRequest());
 
-				H_step1.url = H_step1.url.Replace("step=1", "step=2");
+				H_step1.url = H_step1.url.Replace("Step=1", "Step=2");
 				t.ReqList.Add(H_step1.ToRequest());
 			}
 			catch { }
-
+/*
 			try
 			{
 				//FinishWork
@@ -94,7 +94,7 @@ namespace safetree
 				t.ReqList.Add(H_Finish.ToRequest());
 			}
 			catch { }
-
+*/
 
 			return t;
 		}
