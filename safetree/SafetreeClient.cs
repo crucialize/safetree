@@ -20,11 +20,15 @@ namespace safetree
 			client.CookieContainer = new System.Net.CookieContainer();
 		}
 
-		public string Login(string username,string password,string district)
+		public bool Login(string username,string password,string district)
 		{
 			var res=client.Simple(new RestRequest($"https://{district}.xueanquan.com/LoginHandler.ashx?userName={username}&password={password}&checkcode=&type=login&loginType=1", Method.GET));
 
-			return res.Content;
+			if (res.Content.Contains("ret:1"))
+				return true;
+			else
+				return false;
+
 		}
 
 		public string DoCourse(SafetreeTask SafetreeCourse)
@@ -35,7 +39,7 @@ namespace safetree
 			{
 				var r = client.Simple(req);
 				RetString += r.Content;
-				Thread.Sleep(200);
+				//Thread.Sleep(200);
 			}
 
 			return RetString;
@@ -50,7 +54,7 @@ namespace safetree
 		public void AddRequest(RestRequest req)
 		{
 			ReqList.Add(req);
-			Console.WriteLine($"Request detected: {req.Method.ToString()} {req.Resource}");
+			Colorful.LogInfo($"加入请求: {req.Method.ToString()} {req.Resource}");
 		}
 
 		public static SafetreeTask ParseCourse(string HAR)
@@ -59,6 +63,7 @@ namespace safetree
 			{
 				"_method=SkillCheckName",
 				"_method=TemplateIn2",
+				"_method=Skill_ThirdRecord",
 				"SubmitTest",
 				"Step=1",
 
