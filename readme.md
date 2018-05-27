@@ -1,5 +1,7 @@
 # safetree
 
+注意，现在还不能自动完成手机端登陆请求。
+
 ## 运行环境
 .NET Framework 4.6.1 （Win10自带，Win7可下载，WinXP不行）https://www.microsoft.com/zh-cn/download/details.aspx?id=49981
 
