@@ -81,8 +81,7 @@ namespace safetree
 
 					foreach (var t in taskList)
 					{
-						var ret = client.DoCourse(t);
-						Colorful.WriteLine($"#Response: {ret.Substring(0, Math.Min(80, ret.Length))}"); 
+						client.DoCourse(t);
 					}
 				}
 			}

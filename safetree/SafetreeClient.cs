@@ -31,18 +31,16 @@ namespace safetree
 
 		}
 
-		public string DoCourse(SafetreeTask SafetreeCourse)
+		public void DoCourse(SafetreeTask SafetreeCourse)
 		{
-			var RetString = "";
 
 			foreach(var req in SafetreeCourse.ReqList)
 			{
-				var r = client.Simple(req);
-				RetString += r.Content;
-				//Thread.Sleep(200);
-			}
+				var r = client.Simple(req).Content;
+                Colorful.WriteLine($"#Response: {r.Substring(0, Math.Min(80, r.Length))}");
+                //Thread.Sleep(200);
+            }
 
-			return RetString;
 		}
 
 	}
